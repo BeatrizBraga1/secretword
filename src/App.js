@@ -55,7 +55,12 @@ function App() {
   }
   
   //start
-  const startGame = () => {
+  const startGame = useCallback(() => {
+
+    //limpe todas as palavras
+
+    clearLetterStates();
+
     // pick word and pick category
 
     const {word, category } = pickWordAndCategory();
@@ -76,7 +81,7 @@ function App() {
     setLetters(wordLetters);
 
     setGameStage(stages[1].name)
-  }
+  }, [pickWordAndCategory]);
   // verify letter
   const verifyLetter = (letter) => {
    
@@ -112,6 +117,8 @@ function App() {
     setWrongLetters([]);
   }
 
+  //check if guesses ended
+
   useEffect(() => {
     if(guesses <= 0){
       //resetar todos states
@@ -122,6 +129,26 @@ function App() {
     }
 
   }, [guesses])
+
+  //checagem de condicional de vitoria
+
+  useEffect (() => {
+
+    const uniqueLetters = [...new Set(letters)];
+
+    //condicao de vitoria
+
+    if(guessedLetters.length === uniqueLetters.length) {
+      //add pontos
+      setScore((actualScore) => actualScore += 100)
+
+      //restart no jogo com nova palavra
+      startGame();
+    }
+
+    console.log(uniqueLetters)
+
+  }, [guessedLetters, letters, startGame])
 
 
   //
